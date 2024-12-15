@@ -1,1 +1,13 @@
+name: Hello Workflow
 
+on: push
+
+jobs:
+  say_hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Step
+        run: actions/checkout@v4
+
+      - name: Greeting Step
+        run: echo "Hello, world"
