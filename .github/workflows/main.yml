@@ -3,6 +3,12 @@ name: Autocoder Workflow
 on: 
   issues:
     types: [opened, reopened, labeled]
+    
+  workflow_dispatch:
+    inputs:
+      name:
+      description: "Auto-code"
+      default: "World"
 
 jobs:
   generate_code_chatgpt:
