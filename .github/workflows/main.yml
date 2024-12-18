@@ -1,29 +1,48 @@
-name: Hello Workflow
+name: Autocoder Workflow
 
 on: 
   issues:
-    types: [opened, reopened]
+    types: [opened, reopened, labeled]
 
 jobs:
-  say_hello:
+  generate_code_chatgpt:
+    if: contains(github.event.issue.labels.*.name, 'autocoder-bot')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Print Issue Information
-        env:
+      - name: Make script executable
+        run: chmode +x ./scripts/script.sh
+        
+      - name: Run script file
+        id: generate_code
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          ISSUE_ASSIGNEES: ${{ join(github.event.issue.assignees.*.login, ', ') }}
-          ISSUE_LABEL: ${{ join(github.event.issue.labels.*.name, ', ') }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: ./scripts/scripts.sh $GITHUB_TOKEN $REPOSITORY $ISSUE_NUMBER $OPENAI_API_KEY
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: autocoder-artifact
+          path: |
+            ./*
+            !./.git/**
+            !./*.yml
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: autocoder-artifact
+          path: ./autocoder-artifact
+
+      - name: List files
+        run: ls -Rl ./autocoder-artifact
+        
+        
           
-        run: |
-          echo "Issue Number: $ISSUE_NUMBER"
-          echo "Issue Title: $ISSUE_TITLE"
-          echo "Issue Body: $ISSUE_BODY"
-          echo "Issue Assignees: $ISSUE_ASSIGNEES"
-          echo "Issue Labels: $ISSUE_LABEL"
 
 
