@@ -16,7 +16,6 @@ jobs:
         run: chmod +x ./scripts/script.sh
         
       - name: Run script file
-        id: generate_code
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
