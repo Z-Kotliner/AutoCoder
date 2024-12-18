@@ -20,7 +20,51 @@ fetch_issue_details() {
 
 # Function to send prompt to the ChatGPT model (OpenAI API)
 send_prompt_to_chatgpt() {
-curl -s -X POST "https://42l6m.wiremockapi.cloud/v1/chat/completions"
+curl -s -X POST "https://42l6m.wiremockapi.cloud/v1/chat/completions" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{
+  \"type\": \"object\",
+  \"properties\": {
+    \"model\": {
+      \"type\": \"gpt-3.5-turbo\"
+    },
+    \"messages\": {
+      \"type\": \"array\",
+      \"items\": {
+        \"type\": \"object\",
+        \"required\": [
+          \"role\",
+          \"content\"
+        ],
+        \"properties\": {
+          \"role\": {
+            \"type\": \"string\",
+            \"enum\": [
+              \"user\",
+              \"system\",
+              \"function\",
+              \"assistant\"
+            ]
+          },
+          \"content\": {
+            \"type\": \"string\"
+          },
+          \"name\": {
+            \"type\": \"string\"
+          },
+          \"function_call\": {
+            \"type\": \"object\"
+          }
+        }
+      }
+    },
+    \"max_tokens\": {
+      \"type\": \"500\"
+    }
+  }
+}"
+
 # curl -s -X POST "https://42l6m.wiremockapi.cloud/v1/chat/completions" \
 #     -H "Authorization: Bearer $OPENAI_API_KEY" \
 #     -H "Content-Type: application/json" \
