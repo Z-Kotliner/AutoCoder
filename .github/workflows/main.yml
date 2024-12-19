@@ -46,7 +46,7 @@ jobs:
       - name: Create pull request with generated code 
         uses: peter-evans/create-pull-request@v7
         with:
-         branch: $AUTOCODER_BOT_BRANCH
+         branch: ${{ env.AUTOCODER_BOT_BRANCH }}
          base: 'main'
          labels: 'autocoder-bot'
           
