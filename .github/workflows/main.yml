@@ -19,10 +19,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: 'main'
-      - run: |
-          git checkout -b $AUTOCODER_BOT_BRANCH
+      #   with:
+      #     ref: 'main'
+      # - run: |
+      #     git checkout -b $AUTOCODER_BOT_BRANCH
           
 
       - name: Make script executable
@@ -36,20 +36,23 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: ./scripts/script.sh $GITHUB_TOKEN $REPOSITORY $ISSUE_NUMBER $OPENAI_API_KEY
 
-      - name: Commit the generated code
-        run: |
-          git config --local user.name 'autocoder-bot'
-          git config --local user.email 'actions@github.com'
-          git add .
-          git commit -m "Autocoder genrated code."
-          git push origin $AUTOCODER_BOT_BRANCH
+      # - name: Commit the generated code
+      #   run: |
+      #     git config --local user.name 'autocoder-bot'
+      #     git config --local user.email 'actions@github.com'
+      #     git add .
+      #     git commit -m "Autocoder genrated code."
+      #     # git push origin $AUTOCODER_BOT_BRANCH
 
       - name: Create pull request with generated code 
         uses: peter-evans/create-pull-request@v7
         with:
+         commit-message: Autocoder genrated code
          branch: ${{ env.AUTOCODER_BOT_BRANCH }}
          base: 'main'
          labels: 'autocoder-bot'
+         committer: autocoder-bot <actions@github.com>
+         author: autocoder-bot <actions@github.com>
           
         
           
