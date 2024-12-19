@@ -9,7 +9,9 @@ permissions:
   contents: write
   pull-requests: write
    
-
+env: 
+ AUTOCODER_BOT_BRANCH: autocoder-branch-${{ github.event.issue.number }}
+ 
 jobs:
   generate_code_chatgpt:
     if: contains(github.event.issue.labels.*.name, 'autocoder-bot')
@@ -17,6 +19,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: 'main'
+      - run: |
+          git checkout -b $AUTOCODER_BOT_BRANCH
+          
 
       - name: Make script executable
         run: chmod +x ./scripts/script.sh
@@ -33,14 +40,14 @@ jobs:
         run: |
           git config --local user.name 'autocoder-bot'
           git config --local user.email 'actions@github.com'
-          git add .
-          git commit -m "Autocoder genrated code"
+          git add --all autocoder-bot
+          git commit -m "Autocoder genrated code."
           git push
 
       - name: Create pull request with generated code 
         uses: peter-evans/create-pull-request@v7
         with:
-         branch: "autocoder-branch-$ISSUE_NUMBER"
+         branch: $AUTOCODER_BOT_BRANCH
          base: 'main'
          labels: 'autocoder-bot'
           
