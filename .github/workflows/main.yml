@@ -44,6 +44,10 @@ jobs:
       #     git commit -m "Autocoder genrated code."
       #     # git push origin $AUTOCODER_BOT_BRANCH
 
+      - uses: qoomon/actions--setup-git@v1
+        with:
+          user: autocoder-bot <actions@github.com>
+
       - name: Create pull request with generated code 
         uses: peter-evans/create-pull-request@v7
         with:
