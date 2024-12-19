@@ -35,12 +35,12 @@ jobs:
           git config --local user.email 'actions@github.com'
           git add .
           git commit -m "Autocoder genrated code"
-          git push origin main
+          git push
 
       - name: Create pull request with generated code 
         uses: peter-evans/create-pull-request@v7
         with:
-         branch: autocoder-branch-$ISSUE_NUMBER
+         branch: "autocoder-branch-$ISSUE_NUMBER"
          base: 'main'
          labels: 'autocoder-bot'
           
